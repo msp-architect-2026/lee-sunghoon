@@ -39,7 +39,56 @@ Team 07 - MSP Architect Training 2026
 
 ---
 
-## 4. 2주 완성 로드맵 (Roadmap)
+### 4. 화면 구성 (Screen Composition)
+v0.app을 통해 설계된 사용자 중심의 인터페이스입니다.
+* **Main Home**: 서비스 소개 및 '진단 시작' 버튼
+* **Analysis Page**: 실시간 카메라 연동(가이드라인 제공) 또는 이미지 업로드 영역
+* **Result Page**: 분석된 퍼스널 컬러(사계절) 시각화 및 어울리는 컬러 팔레트 추천
+* **History Page**: 이전 진단 기록 리스트 및 상세 보기
+
+---
+
+### 5. 핵심 API 명세 (API Specification)
+FastAPI 기반의 비동기 통신 구조입니다.
+| Method | Endpoint | Description | Payload |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/analyze` | 이미지 분석 요청 | `{ image: File }` |
+| `GET` | `/api/v1/results/{id}` | 특정 진단 결과 조회 | - |
+| `GET` | `/api/v1/history` | 사용자 진단 이력 전체 조회 | - |
+
+---
+
+### 6. 데이터 구조 (ERD - Mermaid)
+사용자 정보와 진단 결과를 관리하는 논리적 구조입니다.
+
+```mermaid
+erDiagram
+    USER ||--o{ ANALYSIS_RESULT : "performs"
+    ANALYSIS_RESULT ||--|{ COLOR_PALETTE : "suggests"
+
+    USER {
+        string user_id PK
+        string email
+        datetime created_at
+    }
+    ANALYSIS_RESULT {
+        int id PK
+        string user_id FK
+        string image_url
+        string season_result
+        float confidence_score
+        datetime analyzed_at
+    }
+    COLOR_PALETTE {
+        int id PK
+        int analysis_id FK
+        string hex_code
+        string color_name
+    }
+```
+---
+
+## 7. 2주 완성 로드맵 (Roadmap)
 - [ ] **1주차: Build & Containerize**
     - [ ] v0.app UI 디자인 및 React 코드 추출
     - [ ] Kaggle API 연동 및 퍼스널 컬러 분석 백엔드(FastAPI) 개발
@@ -50,5 +99,5 @@ Team 07 - MSP Architect Training 2026
     - [ ] ArgoCD 연동 및 무중단 배포 환경 최종 검증
 
 ---
-## 5. 시작하기 (Getting Started)
+## 8. 시작하기 (Getting Started)
 (작업이 진행됨에 따라 로컬 실행 방법 등 추가 예정)
