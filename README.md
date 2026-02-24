@@ -1,95 +1,89 @@
 # team-07
 Team 07 - MSP Architect Training 2026
-# 🎨 AI Personal Color Analyzer & GitOps Infrastructure
-> **v0.app 디자인과 Kaggle 데이터를 결합한 차세대 AI 서비스 및 GitOps 자동화 인프라 구축**
+# 🎨 Personal Color AI Analysis Application
 
+## 📖 1. 프로젝트 소개 (Project Overview)
+본 프로젝트는 사용자의 안면 이미지를 분석하여 4계절(봄, 여름, 가을, 겨울) 퍼스널 컬러를 진단하고, 맞춤형 컬러 팔레트(메이크업, 의상, **헤어 염색 추천 컬러** 등)를 제공하는 **AI 기반 Mobile-First 웹 애플리케이션**입니다.
 
-
-## 1. 프로젝트 개요 (Project Goals)
-본 프로젝트는 최신 AI 웹 프레임워크와 데이터 플랫폼을 활용하여, **사용자 친화적인 AI 서비스를 안정적인 클라우드 네이티브 환경에 배포**하는 것을 목표로 함
-
-* **Rapid UI Development (v0.app):** v0.app의 프롬프트 기반 UI 생성을 통해 고도로 정제된 React 기반 프론트엔드 구축 및 컨테이너화
-* **Data-Driven AI (Kaggle):** Kaggle의 고품질 데이터셋과 사전 학습된 모델을 활용하여 분석 정확도를 확보하고, Kaggle API를 통한 데이터 파이프라인 구축
-* **Zero-Touch Deployment (GitOps):** GitLab CI와 ArgoCD를 연계하여 코드 변경부터 인프라 반영까지 전 과정을 자동화하는 **Full-Automation** 실현
-* **Scalable Architecture:** 트래픽 변화에 유연하게 대응할 수 있도록 Kubernetes 오케스트레이션 및 HPA(Autoscaling) 적용
+무거운 AI 분석이 진행되는 동안 v0.app을 활용한 화려한 UI 컴포넌트로 사용자의 지루함을 상쇄하며, 도출된 결과는 화면의 70% 이상을 차지하는 시각적 타격감으로 제공됩니다. 백엔드와 인프라는 Kubernetes(K8s), Helm, GitOps 기반으로 구축되어 잦은 UI 개편과 AI 가중치 업데이트에도 무중단 배포 및 트래픽 자동 확장이 가능한 견고한 아키텍처를 자랑합니다. 특히 원본 이미지를 영구 저장하지 않는 프라이버시 중심(Privacy-First) 설계로 사용자의 신뢰를 확보합니다.
 
 ---
 
-## 2. 기술 스택 (Tech Stack)
+## 🏗️ 2. 시스템 아키텍처 (System Architecture)
 
-| 분류 | 기술 도구 | 활용 목적 |
-| :--- | :--- | :--- |
-| **Frontend** | **v0.app**, React (Next.js) | 프롬프트 기반 UI 설계 및 고속 웹 개발 |
-| **Backend** | **FastAPI** (Python) | 비동기 기반 AI 추론 API 서버 구축 |
-| **AI / Data** | **Kaggle**, OpenCV, Dlib | 학습 데이터 확보 및 퍼스널 컬러 분석 알고리즘 |
-| **Container** | **Docker** | 프론트/백엔드 환경 독립성 보장 및 이미지 최적화 |
-| **Orchestration** | **Kubernetes** | 자원 관리, 셀프 힐링 및 무중단 배포 환경 |
-| **CI / CD** | **GitLab CI**, **ArgoCD** | GitOps 기반의 지속적 통합 및 선언적 배포 |
+시스템은 엔터프라이즈급 안정성과 확장성을 지향합니다. 대규모 트래픽과 무거운 AI 연산을 효율적으로 처리하기 위해 역할에 따라 계층이 철저히 분리되어 있으며, Helm Chart를 통해 복잡한 인프라 배포를 규격화했습니다. 불필요한 외부 스토리지 의존성을 제거하여 가볍고 독립적인 운영이 가능합니다.
 
----
+### 🧩 계층별 핵심 구성 요소 (Core Components by Layer)
 
-## 3. 핵심 아키텍처 (Key Highlights)
+**1. Frontend Layer (사용자 접점)**
+* `Next.js`: **[사용하는 이유]** 모바일 최우선 반응형 렌더링 및 빠른 초기 로딩 속도(SSR/SSG)를 확보하여 사용자 이탈을 막기 위함.
+* `Tailwind CSS` & `v0.app`: **[사용하는 이유]** AI 대기 시간을 상쇄할 화려하고 인터랙티브한 UI 컴포넌트를 고속으로 추출하고 일관된 스타일링을 적용하기 위함.
+* `Zustand`: **[사용하는 이유]** 카메라 조명 상태, 로딩 진행률 등 클라이언트의 복잡한 전역 상태를 보일러플레이트 없이 가장 가볍게 관리하기 위함.
+* `NextAuth.js`: **[사용하는 이유]** 소셜 로그인(OAuth)을 손쉽게 구현하여 사용자별 진단 이력(DB)을 정확히 매핑하기 위함.
 
+**2. Network & Routing Layer (관문 계층)**
+* `Nginx Ingress Controller`: **[사용하는 이유]** 외부 트래픽을 K8s 내부로 받아들이고, 도메인 패스(`/api`, `/`)에 따라 프론트엔드와 백엔드 파드로 정확히 라우팅(L7 로드밸런싱)하기 위함.
 
+**3. API & Business Layer (통신 및 비즈니스)**
+* `FastAPI`: **[사용하는 이유]** Python 생태계의 AI 라이브러리와 완벽히 호환되며, 비동기 처리에 강력하여 병목 현상 없이 요청을 수용하기 위함.
+* `BackgroundTasks` (FastAPI 내장): **[사용하는 이유]** 별도의 무거운 메시지 큐 시스템을 구축하는 오버헤드를 줄이고, AI 연산을 넌블로킹(Non-blocking) 백그라운드 작업으로 넘겨 API 응답성을 확보하기 위함.
 
-1.  **UI-to-Container:** v0.app에서 생성된 코드를 Docker 이미지화하여 프론트엔드 Pod로 배포
-2.  **Kaggle API Integration:** 컨테이너 빌드 또는 실행 시 Kaggle API를 통해 최신 모델/데이터 자동 로드
-3.  **GitOps Pipeline:** * **App Repo:** 소스 코드 변경 시 GitLab CI를 통해 이미지 빌드 및 푸시
-    * **Manifest Repo:** K8s 설정(YAML) 변경 시 ArgoCD가 클러스터 상태를 자동으로 동기화
+**4. AI Analysis Layer (지능형 분석 엔진)**
+* `OpenCV`: **[사용하는 이유]** 시스템 정확도의 가장 큰 변수인 '조명'을 정규화하고 화이트밸런스를 보정하여 데이터 일관성을 맞추기 위함.
+* `MediaPipe`: **[사용하는 이유]** 리소스를 적게 차지하면서도 얼굴 랜드마크(피부, 눈동자, 머리카락 영역)를 초고속으로 분리해내기 위함.
+* `ONNX Runtime`: **[사용하는 이유]** Kaggle에서 가져온 무거운 모델(PyTorch/TF)을 최적화된 포맷으로 변환하여, 추론 속도를 1초 이내로 단축하고 K8s 파드의 메모리 비용을 획기적으로 절감하기 위함.
 
----
+**5. Data Layer (데이터 저장소)**
+* `PostgreSQL`: **[사용하는 이유]** 단순 1회성 앱을 넘어 사용자 메타데이터, 진단된 컬러 코드, 누적 통계 등 관계형 데이터를 무결성 있게 보관하기 위함. (민감한 안면 원본 이미지는 스토리지 유지보수 및 개인정보 보호를 위해 영구 저장하지 않고 처리 직후 파기합니다.)
 
-### 4. 화면 구성 (Screen Composition)
-v0.app을 통해 설계된 사용자 중심의 인터페이스입니다.
-* **Main Home**: 서비스 소개 및 '진단 시작' 버튼
-* **Analysis Page**: 실시간 카메라 연동(가이드라인 제공) 또는 이미지 업로드 영역
-* **Result Page**: 분석된 퍼스널 컬러(사계절) 시각화 및 어울리는 컬러 팔레트 추천
-* **History Page**: 이전 진단 기록 리스트 및 상세 보기
-
----
-
-### 5. 핵심 API 명세 (API Specification)
-FastAPI 기반의 비동기 통신 구조입니다.
-| Method | Endpoint | Description | Payload |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/v1/analyze` | 이미지 분석 요청 | `{ image: File }` |
-| `GET` | `/api/v1/results/{id}` | 특정 진단 결과 조회 | - |
-| `GET` | `/api/v1/history` | 사용자 진단 이력 전체 조회 | - |
+**6. DevOps & Infrastructure Layer (인프라 및 배포)**
+* `Kubernetes (K8s)`: **[사용하는 이유]** 컨테이너 오케스트레이션을 통해 트래픽 스파이크 발생 시 파드(Pod)를 자동 스케일아웃하여 서버 다운을 원천 차단하기 위함.
+* `Helm Chart`: **[사용하는 이유]** 복잡한 K8s 매니페스트(YAML)를 패키징하고 `values.yaml`로 변수화하여, Dev/Staging/Prod 환경별 배포를 규격화하고 관리 효율성을 극대화하기 위함.
+* `GitLab CI` & `ArgoCD`: **[사용하는 이유]** 코드가 푸시되면 즉시 K8s 클러스터 상태를 동기화하는 GitOps 환경을 구축하여 무중단 지속적 배포(CD)를 실현하기 위함.
 
 ---
 
-## 💾 4. 데이터 구조 (Data Structure - ERD)
+## 🛠️ 3. 기술 스택 선정의 핵심 의사결정 (Key Tech Rationale)
 
-이 프로젝트는 별도의 RDBMS 없이 **브라우저 로컬 스토리지**와 **메모리/S3(확장 시)**를 활용하는 가벼운 구조를 가집니다. 아래는 논리적인 데이터 흐름을 나타내는 개념적 ERD입니다.
-
-```mermaid
-erDiagram
-    USER ||--o{ DIAGNOSIS_HISTORY : generates
-    USER {
-        string session_id "Browser Local Session"
-        datetime last_visited
-    }
-    DIAGNOSIS_HISTORY {
-        string history_id PK "UUID"
-        string user_session_id FK
-        date diagnosis_date "진단 날짜"
-        string primary_tone "예: Spring Warm"
-        string skin_rgb_hex "피부톤 추출 값"
-        string image_url "분석된 이미지 (Base64 or S3 URL)"
-    }
-```
----
-
-## 7. 2주 완성 로드맵 (Roadmap)
-- [ ] **1주차: Build & Containerize**
-    - [ ] v0.app UI 디자인 및 React 코드 추출
-    - [ ] Kaggle API 연동 및 퍼스널 컬러 분석 백엔드(FastAPI) 개발
-    - [ ] 프론트/백엔드 Dockerfile 작성 및 이미지 최적화
-- [ ] **2주차: Deploy & Automate**
-    - [ ] Kubernetes 매니페스트(Deployment, Service, Ingress) 작성
-    - [ ] GitLab CI 파이프라인 구성 (Build -> Push)
-    - [ ] ArgoCD 연동 및 무중단 배포 환경 최종 검증
+* **프라이버시 중심 데이터 설계 (No Object Storage):** 초기에는 이미지 저장을 고려했으나, K8s 환경을 가볍게 유지하고 개인정보 이슈를 원천 차단하기 위해 원본 이미지는 메모리에서 분석 후 즉시 파기합니다. 대신 분석 결과(도출된 컬러값, 텍스트 데이터)만 PostgreSQL에 저장하여 인프라 유지 비용을 극적으로 낮췄습니다.
+* **UI/UX와 상태 관리:** AI 대기 시간을 시각적 즐거움으로 바꾸기 위해 v0.app으로 화려한 컴포넌트를 고속 생성합니다. 이러한 컴포넌트 간 '분석 진행률' 상태를 가볍게 공유하기 위해 Zustand를 채택했습니다.
+* **AI 서빙 경량화 (ONNX 활용):** 관리 포인트를 줄이기 위해 무거운 분류 모델을 **ONNX 포맷으로 변환**했습니다. 이를 FastAPI의 `BackgroundTasks`와 결합하여 초고속 추론과 서버 응답성을 동시에 확보했습니다.
+* **배포 자동화 (Helm + ArgoCD):** 마이크로서비스 개수가 늘어남에 따라 순수 YAML로는 관리에 한계가 있습니다. **Helm Chart**를 도입해 배포 템플릿을 표준화하고 ArgoCD와 연동함으로써, 압도적으로 유연하고 안정적인 GitOps 무중단 배포 체계를 완성했습니다.
 
 ---
-## 8. 시작하기 (Getting Started)
-(작업이 진행됨에 따라 로컬 실행 방법 등 추가 예정)
+
+## 🚀 4. 핵심 데이터 파이프라인 (Data Pipeline)
+
+정확도를 결정짓는 **'사용자의 조명 환경'**을 통제하기 위해 인과적 피드백 루프를 적용했습니다.
+
+1. **촬영 단계 (Light Feedback):** 사용자가 앱의 가이드라인에 맞춰 사진을 찍을 때, UI 단에서 조명 상태를 즉각 평가합니다. 너무 어둡거나 역광일 경우 재촬영을 유도합니다.
+2. **로딩 단계 (Visual Masking):** 이미지가 서버로 인입되면, FastAPI는 즉시 응답을 반환하고 백그라운드 분석을 시작합니다. 이 시간 동안 프론트엔드는 v0.app 기반의 화려한 스캔 애니메이션을 재생하여 체감 대기 시간을 지워버립니다.
+3. **추론 단계 (High-Speed Inference):** OpenCV로 전처리된 이미지가 MediaPipe를 거친 뒤, ONNX Runtime을 통과하여 찰나의 순간에 4계절 컬러와 헤어/메이크업 추천 데이터를 추출합니다. 원본 이미지는 이 단계가 끝나면 즉시 파기됩니다.
+4. **결과 단계 (Impactful UI):** 최종 도출된 컬러 팔레트가 화면의 70% 이상을 차지하며 시각적 카타르시스를 제공하고, 도출된 결과 텍스트 데이터만 PostgreSQL에 안전하게 저장됩니다.
+
+---
+
+## 🌟 5. 프로젝트 핵심 기능 (Core Features)
+**1. 실시간 조명 진단 및 스마트 캡쳐 (Smart Capture & Light Feedback)**
+   * `기능 설명`: 퍼스널 컬러 진단의 정확도를 떨어뜨리는 가장 큰 원인인 '잘못된 조명'을 시스템이 능동적으로 차단합니다.
+   * `작동 방식`: 사용자가 카메라를 켜고 얼굴 가이드라인에 맞추는 순간, 프론트엔드 로직이 이미지의 명도와 대비를 즉각 평가합니다. 역광이거나 너무 어두울 경우 "조명이 너무 어둡습니다. 밝은 곳으로 이동해 주세요"라는 피드백을 주어 재촬영을 유도합니다.
+**2.초고속 AI 4계절 컬러 추론 (High-Speed AI Inference)**
+   * `기능 설명`: 촬영된 이미지를 바탕으로 사용자의 퍼스널 컬러를 1초 내에 빠르고 정확하게 진단합니다.
+   * `작동 방식`: 서버로 인입된 이미지는 OpenCV를 통해 화이트밸런스가 보정되고, MediaPipe가 눈동자, 피부, 머리카락 영역을 정밀하게 분리해 냅니다. 이후 이 데이터가 최적화된 ONNX Runtime 모델을 통과하며 즉각적인 진단 결과를 도출해 냅니다.
+**3. 시각적 타격감이 극대화된 맞춤형 스타일 큐레이션 (Impactful Curation)**
+   * `기능 설명`: 딱딱한 텍스트 결과가 아닌, 시각적 즐거움과 실용적인 스타일링 가이드를 제공합니다.
+   * `작동 방식`: 도출된 퍼스널 컬러에 맞는 컬러 팔레트가 모바일 화면의 70% 이상을 가득 채우며 시각적 카타르시스를 제공합니다. 더불어 해당 컬러에 어울리는 메이크업 톤, 의상 스타일링뿐만 아니라 사용자 맞춤형 헤어 컬러 추천까지 아우르는 종합 뷰티 큐레이션을 제공합니다.
+**4. 지루함 제로의 인터랙티브 로딩 (Zero-Boredom Loading UX)**
+   * `기능 설명`: 백엔드에서 무거운 AI 연산이 진행되는 1~2초의 틈을 시각적 즐거움으로 메웁니다.
+   * `작동 방식`: API 응답을 기다리는 동안 단순한 스피너(빙글빙글 도는 아이콘)를 보여주는 대신, v0.app으로 고속 추출한 세련된 컴포넌트(예: 얼굴 영역을 스캔하는 레이저 애니메이션 등)을 렌더링하여 사용자의 이탈을 막고 기대감을 증폭시킵니다.
+**5. 프라이버시 안심 데이터 처리 (Privacy-First Processing)
+   * `기능 설명`: 사용자의 가장 민감한 개인정보인 '안면 원본 이미지'를 서버에 남기지 않아 보안과 신뢰성을 확보할 수 있습니다.
+   * `작동 방식`: 업로드된 이미지는 메모리 상에서 AI분석을 마치는 즉시 파기(Volatile)됩니다. 데이터베이스(PostgreSQL)에는 사용자를 식별할 수 없는 메타데이터와 최종 도출된 컬러 텍스트 정보만 안전하게 누적되어, 통계 및 진단 이력 제공 목적으로만 활용됩니다.
+
+---
+
+## 🔧 6. 운영 및 유지보수 가이드 (Operations Guide)
+
+* **UI/UX 텍스트 및 디자인 변경:** v0.app을 통해 새로운 React 코드를 추출하고 깃랩에 푸시합니다. 파이프라인이 빌드를 마치면, ArgoCD가 Helm Chart의 Image Tag 변경을 감지하여 K8s 프론트엔드 Pod를 무중단 배포(Rolling Update) 합니다.
+* **AI 모델 가중치 업데이트:** Kaggle에서 추가 학습을 진행한 후, 가중치 파일을 ONNX로 변환하여 레지스트리에 업데이트합니다. K8s 파드가 재시작 없이 새 가중치를 동적으로 로드하도록 구성하여 AI 업데이트로 인한 서비스 단절을 막습니다.
+* **트래픽 급증 대응 (스케일링):** 사용자 접속이 폭주할 경우, K8s HPA(Horizontal Pod Autoscaler)가 파드의 CPU/메모리 사용량을 감지하여 FastAPI 및 Next.js 파드 개수를 자동으로 늘립니다. 관리자의 수동 개입 없이 시스템 스스로 안정성을 유지합니다.
