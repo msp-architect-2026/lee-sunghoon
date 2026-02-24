@@ -18,6 +18,21 @@
 Production Scale 메시지 큐 도입
 방식이 더 합리적
 
+Kubernetes환경에서의 문제
+여러 개의 FastAPI Pod
+HPA 자동 스케일링 등을 쓸 계획임.
+1.요청이 Pod A에 들어옴
+2.BackgroundTasks 실행 중
+3.HPA가 Pod A 종료
+4.작업이 날아감.
+그러므로 운영 단계에서는 보통
+Redis + Kafka + Celery같은 메시지 큐 기반 비동기 처리 시스템 사용
+
+BackgroundTasks의 한계는?
+
+👉 “프로세스 기반 실행이기 때문에 분산 환경에서 안정성이 떨어지며, 프로덕션에서는 메시지 큐 기반 비동기 아키텍처가 더 적합
+
+
 ---
 
 ##AI 서빙 구조
