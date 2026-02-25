@@ -90,3 +90,8 @@ erDiagram
         text styling_tip
     }
 ```
+
+---
+
+본 ERD 문서는 애플리케이션의 백엔드(FastAPI) ORM 모델 구축 및 DB 스키마 생성(Migration)의 기준 자료로 활용됨.
+Kubernetes 환경에 배포될 PostgreSQL Pod의 초기 Init Script 작성 시 본 구조 참조.
