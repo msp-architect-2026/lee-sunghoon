@@ -62,6 +62,7 @@
 * **Method:** `GET`
 * **Auth Required:** Yes (Bearer Token)
 **Path Variables**
+
 | 변수명 | 타입 | 필수 여부 | 설명 |
 | :--- | :--- | :--- | :--- |
 | `task_id` | String | **Yes** | 업로드 API에서 발급받은 작업 ID |
