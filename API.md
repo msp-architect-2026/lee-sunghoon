@@ -61,6 +61,7 @@
 * **URL:** `/analyze/result/{task_id}
 * **Method:** `GET`
 * **Auth Required:** Yes (Bearer Token)
+
 **Path Variables**
 
 | 변수명 | 타입 | 필수 여부 | 설명 |
