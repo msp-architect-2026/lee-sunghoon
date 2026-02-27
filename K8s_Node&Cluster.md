@@ -181,10 +181,10 @@ VM3은 퍼스널 컬러 진단 품질을 결정짓는 핵심 연산 노드이자
 
 **VM4의 할당 기능 상세**
 
-**GitLab CE (Core 서버):** 소스코드 저장소 역할입니다. Next.js 프론트엔드 코드, FastAPI 백엔드 코드, Helm Chart YAML, ONNX 모델 관련 스크립트가 모두 이 VM의 GitLab 레포지토리에서 관리됩니다. 개발자가 코드를 `git push`하는 순간 이후 모든 자동화의 출발점이 됩니다.
-**GitLab CI Runner:** `.gitlab-ci.yml`에 정의된 파이프라인을 실제로 실행하는 에이전트입니다. 이 프로젝트에서 Runner가 수행하는 작업은 구체적으로 다음과 같습니다. Next.js 빌드 및 Docker 이미지 생성, FastAPI 이미지 빌드, 빌드된 이미지에 버전 태그(예: `v1.0.3`) 부착 후 컨테이너 레지스트리에 push, Helm Chart의 `values.yaml`에서 image tag 값을 새 버전으로 자동 업데이트한 뒤 commit합니다.
-**GitLab Container Registry:** 빌드된 Docker 이미지를 저장하는 내부 레지스트리입니다. VM2/VM3의 K8s 파드들이 이 레지스트리에서 이미지를 pull하여 컨테이너를 실행합니다. 외부 Docker Hub를 쓰지 않고 내부 레지스트리를 사용하므로 이미지 pull 속도가 빠르고 외부 의존성이 줄어듭니다.
-**ArgoCD Webhook 수신 트리거:** GitLab CI가 `values.yaml`의 image tag를 업데이트하고 commit/push하면, GitLab이 VM1의 ArgoCD로 Webhook을 발송합니다. ArgoCD는 이 신호를 받고 변경된 Helm Chart를 K8s 클러스터에 즉시 적용(Sync)합니다. 이것이 `git push` 한 번으로 VM2/VM3의 파드가 무중단 교체되는 GitOps 자동화의 전체 흐름입니다.
+* **GitLab CE (Core 서버):** 소스코드 저장소 역할입니다. Next.js 프론트엔드 코드, FastAPI 백엔드 코드, Helm Chart YAML, ONNX 모델 관련 스크립트가 모두 이 VM의 GitLab 레포지토리에서 관리됩니다. 개발자가 코드를 `git push`하는 순간 이후 모든 자동화의 출발점이 됩니다.
+* **GitLab CI Runner:** `.gitlab-ci.yml`에 정의된 파이프라인을 실제로 실행하는 에이전트입니다. 이 프로젝트에서 Runner가 수행하는 작업은 구체적으로 다음과 같습니다. Next.js 빌드 및 Docker 이미지 생성, FastAPI 이미지 빌드, 빌드된 이미지에 버전 태그(예: `v1.0.3`) 부착 후 컨테이너 레지스트리에 push, Helm Chart의 `values.yaml`에서 image tag 값을 새 버전으로 자동 업데이트한 뒤 commit합니다.
+* **GitLab Container Registry:** 빌드된 Docker 이미지를 저장하는 내부 레지스트리입니다. VM2/VM3의 K8s 파드들이 이 레지스트리에서 이미지를 pull하여 컨테이너를 실행합니다. 외부 Docker Hub를 쓰지 않고 내부 레지스트리를 사용하므로 이미지 pull 속도가 빠르고 외부 의존성이 줄어듭니다.
+* **ArgoCD Webhook 수신 트리거:** GitLab CI가 `values.yaml`의 image tag를 업데이트하고 commit/push하면, GitLab이 VM1의 ArgoCD로 Webhook을 발송합니다. ArgoCD는 이 신호를 받고 변경된 Helm Chart를 K8s 클러스터에 즉시 적용(Sync)합니다. 이것이 `git push` 한 번으로 VM2/VM3의 파드가 무중단 교체되는 GitOps 자동화의 전체 흐름입니다.
 
 
 - 💡 호스트 PC RAM이 32GB라면 VM에 30GB를 할당하면 호스트 OS가 불안정해질 수 있습니다. 호스트 OS용으로 최소 6~8GB는 남겨두어야 하므로, 호스트 RAM이 32GB라면 VM3의 메모리를 10GB로 줄이거나, VM2를 6GB로 낮추는 조정이 필요합니다. 가능하다면 호스트 RAM 40GB 이상 환경을 권장합니다.
