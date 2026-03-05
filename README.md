@@ -23,6 +23,7 @@ Team 07 - MSP Architect Training 2026
 
 **2. Network & Routing Layer (관문 계층)**
 * `Nginx Ingress Controller`: **[사용하는 이유]** 외부 트래픽을 K8s 내부로 받아들이고, 도메인 패스(`/api`, `/`)에 따라 프론트엔드와 백엔드 파드로 정확히 라우팅(L7 로드밸런싱)하기 위함.
+* `MetalLB(Loadbalancer)`: 클러스터의 대문을 만드는 도구로, 베어메탈(가상머신 포함)환경에서는 외부 IP를 자동으로 할당해주는 기능이 없는데, MetalLB가 그 역할을 대신하여 외부 사용자가 서비스에 접속할 수 있는 통로를 열어줌.
 
 **3. API & Business Layer (통신 및 비즈니스)**
 * `FastAPI`: **[사용하는 이유]** Python 생태계의 AI 라이브러리와 완벽히 호환되며, 비동기 처리에 강력하여 병목 현상 없이 요청을 수용하기 위함.
@@ -40,7 +41,7 @@ Team 07 - MSP Architect Training 2026
 * `Kubernetes (K8s)`: **[사용하는 이유]** 컨테이너 오케스트레이션을 통해 트래픽 스파이크 발생 시 파드(Pod)를 자동 스케일아웃하여 서버 다운을 원천 차단하기 위함.
 * `Helm Chart`: **[사용하는 이유]** 복잡한 K8s 매니페스트(YAML)를 패키징하고 `values.yaml`로 변수화하여, Dev/Staging/Prod 환경별 배포를 규격화하고 관리 효율성을 극대화하기 위함.
 * `GitLab CI` & `ArgoCD`: **[사용하는 이유]** 코드가 푸시되면 즉시 K8s 클러스터 상태를 동기화하는 GitOps 환경을 구축하여 무중단 지속적 배포(CD)를 실현하기 위함.
-
+* `Flannel(CNI)`: **[사용하는 이유]** 클러스터 내부의 혈관같은 역할로, 각 노드에 흩어져있는 파드들이 서로 통신할 수 있게 '오버레이 네트워크'를 구성, Calico 대신 Flannel을 사용하여 인프라 구성을 보다 원할하게 진행할 수 있도록 함.
 ---
 
 ## 🛠️ 3. 기술 스택 선정의 핵심 의사결정 (Key Tech Rationale)
